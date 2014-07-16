@@ -18,7 +18,7 @@ module NewRelicPartnersApi
 			:primary_admin
 
 		def self.list
-			response = do_get(:account)
+			response = do_get('accounts', '/accounts')
 
 			result = []
 			response.each do |account|
@@ -26,6 +26,10 @@ module NewRelicPartnersApi
 			end
 
 			return result
+		end
+
+		def destroy
+			do_delete("/accounts/#{@id}")
 		end
 
 		def primary_admin=(value)

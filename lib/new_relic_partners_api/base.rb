@@ -12,19 +12,33 @@ module NewRelicPartnersApi
 			return { 'x-api-key' => NewRelicPartnersApi.api_key, 'Content-Type' => 'application/json' }
 		end
 
-		def self.url(service)
+		def self.root_url
 			raise "partner_id required" unless NewRelicPartnersApi.partner_id
 
-			return "/api/v2/partners/#{NewRelicPartnersApi.partner_id}/#{service}"
+			return "/api/v2/partners/#{NewRelicPartnersApi.partner_id}"
 		end
 
-		def self.do_get(service, path = '', options = {})
-			response = self.get("#{url(SERVICES[service])}/#{path}", { :headers => headers }.merge(options) )
+		def self.do_get(root, path, options = {})
+			to_call = "#{root_url}#{path}"
+			puts to_call if ENV['DEBUG']
+			response = self.get(to_call, { :headers => headers }.merge(options) )
 			raise response.message if response.code != 200
 
-			puts response.parsed_response
+			puts response.parsed_response if ENV['DEBUG']
 
-			return response.parsed_response[SERVICES[service]]
+			return response.parsed_response[root]
+		end
+
+		def do_delete(path, options = {})
+			to_call = "#{self.class.root_url}#{path}"
+			puts to_call if ENV['DEBUG']
+
+			response = self.class.delete(to_call, { :headers => self.class.headers}.merge(options) )
+			raise response.message if response.code != 200
+
+			puts response.parsed_response if ENV['DEBUG']
+
+			return response.parsed_response
 		end
 
 		def self.deserialize(service, data)
@@ -36,10 +50,6 @@ module NewRelicPartnersApi
 
 			return clazz
 		end
-
-		private
-
-		SERVICES = { :account => 'accounts' }
 
 	end
 end
