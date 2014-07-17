@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem 'httparty'
+gem 'activeresource'
 
 group :development do
   gem "bundler", "~> 1.0"
