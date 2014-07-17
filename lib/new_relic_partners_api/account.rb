@@ -28,6 +28,20 @@ module NewRelicPartnersApi
 			return result
 		end
 
+		def self.load(account_id)
+			response = do_get(nil, "/accounts/#{account_id}")
+
+			return deserialize(:account, response)
+		end
+
+		def self.create(attributes)
+			do_post(nil, '/accounts', attributes)
+		end
+
+		def save
+			do_put(nil, self.to_hash, "/accounts/#{self.id}")
+		end
+
 		def destroy
 			do_delete("/accounts/#{@id}")
 		end

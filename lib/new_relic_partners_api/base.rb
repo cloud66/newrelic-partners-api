@@ -26,7 +26,26 @@ module NewRelicPartnersApi
 
 			puts response.parsed_response if ENV['DEBUG']
 
-			return response.parsed_response[root]
+			if root
+				return response.parsed_response[root]
+			else
+				return response.parsed_response
+			end
+		end
+
+		def do_put(root, attributes, path, options = {})
+			to_call = "#{self.class.root_url}#{path}"
+			puts to_call if ENV['DEBUG']
+			response = self.class.put(to_call, { :body => attributes, :headers => self.class.headers }.merge(options) )
+			raise response.message if response.code != 200
+
+			puts response.parsed_response if ENV['DEBUG']
+
+			if root
+				return response.parsed_response[root]
+			else
+				return response.parsed_response
+			end
 		end
 
 		def do_delete(path, options = {})
@@ -49,6 +68,13 @@ module NewRelicPartnersApi
 			end
 
 			return clazz
+		end
+
+		def to_hash
+			hash = {}
+			self.instance_variables.each {|var| hash[var.to_s.delete("@")] = self.instance_variable_get(var) }
+
+			return hash
 		end
 
 	end
