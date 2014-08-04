@@ -6,5 +6,10 @@ module NewRelicPartnersApi
 	class << self
 		attr_accessor :api_key, :partner_id
 
+		def partner_id
+			# TODO: FOR NOW
+			@partner_id ||= ENV['NEWRELIC_PARTNERID']
+		end
+
 	end
 end
